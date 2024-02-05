@@ -1,0 +1,116 @@
+{
+    "experiment": {
+        "log_dir": null, 
+        "hostfile": "",
+        "exp_name": "aquila_24b_pretrained"
+    },
+    "launch": {
+        "nnodes": 2,
+        "nproc_per_node": 16,
+        "node_rank": 0,
+        "master_addr": "127.0.0.1",
+        "master_port": 54331
+    },
+    "env_vars": {
+        "CUDA_DEVICE_MAX_CONNECTIONS": "1",
+        "NCCL_SOCKET_IFNAME": "`ip -4 addr show | grep inet | grep 10.31.12. | sed -e 's/^.*global *//g'`",
+        "GLOO_SOCKET_IFNAME": "`ip -4 addr show | grep inet | grep 10.31.12. | sed -e 's/^.*global *//g'`",
+        "NCCL_NET_SHARED_BUFFERS": "0",
+        "NCCL_FORCESYNC_DISABLE": "1",
+        "UMD_CCLINLASTCE": "1",
+        "ENABLE_FLASH_ATTENTION_WITH_IXDNN": "1",
+        "NCCL_DEBUG": "TRACE",
+        "NCCL_ALGO": "Ring",
+        "OMP_NUM_THREADS": "4",
+        "NCCL_USE_DIRECT": "1"
+    },
+    "training": {
+        "mlp-g1-tp-overlap": true,
+        "mlp-g2-tp-overlap": true,
+        "attn-g1-tp-overlap": true,
+        "attn-g2-tp-overlap": true,
+        "mlp-g1-overlap-size": 4,
+        "mlp-g2-overlap-size": 4,
+        "attn-g1-overlap-size": 4,
+        "attn-g2-overlap-size": 4,
+        "mlp-g1-save-total-input-for-backward": true,
+        "attn-g1-save-total-input-for-backward": true,
+        "train_samples": 24414,
+        "eval_iters": 0,
+        "eval_interval": 2000,
+        "tensor_model_parallel_size": 4,
+        "pipeline_model_parallel_size": 4,
+        "micro_batch_size": 1,
+        "global_batch_size": 1024,
+        "disable_bias_linear": true,
+        "use-distributed-optimizer": true,
+        "use_flash_attn": true,
+        "num-layers-per-virtual-pipeline-stage": 5,
+        "recompute-granularity": "full",
+        "recompute-method": "uniform",
+        "recompute-num-layers": 1,
+        "recompute-method-per-stage": "11,0,1,1",
+        "recompute-num-layers-per-stage": "11,1,1,1",
+        "sequence-parallel": true
+    },
+    "mixed_precision": {
+        "bf16": true,
+        "attention_softmax_in_fp32": true,
+        "embedding_weights_in_fp32": true,
+        "rotary-position-embeddings-in-fp32": true,
+        "accumulate-allreduce-grads-in-fp32": true
+    },
+    "data": {
+        "data_path": [
+            "path-to-data"
+        ],
+        "tokenizer_type": "AquilaTokenizer",
+        "vocab_size": 100008,
+        "vocab_file": "../examples/aquila/tokenizer/vocab.json",
+        "merge_file": "../examples/aquila/tokenizer/merges.txt",
+        "special_tokens_file": "../examples/aquila/tokenizer/special_tokens.txt",
+        "no-global-file-system": true
+    },
+    "network": {
+        "num_layers": 60,
+        "hidden_size": 6144,
+        "num_attention_heads": 48,
+        "group_query_attention": true,
+        "num_query_groups": 8,
+        "hidden_dim_multiplier": 1.3,
+        "swiglu": true,
+        "multiple_of": 4096,
+        "seq-length": 4096,
+        "max_position_embeddings": 4096,
+        "layernorm_epsilon": 1e-05,
+        "layernorm-init-weight": 0.3,
+        "use_rotary_position_embeddings": true,
+        "no_position_embedding": true,
+        "apply_layernorm_rms": true,
+        "make_vocab_size_divisible_by": 64,
+        "untie_embeddings_and_output_weights": true
+    },
+    "initialization": {
+        "seed": 42,
+        "init_method_std": 0.02
+    },
+    "regularization": {
+        "attention_dropout": 0.0,
+        "hidden_dropout": 0.0,
+        "weight_decay": 0.1,
+        "adam_beta1": 0.9,
+        "adam_beta2": 0.95,
+        "clip_grad": 1.0
+    },
+    "learning_rate": {
+        "lr": 9.65e-6,
+        "lr_decay_style": "linear",
+        "lr-warmup-fraction": 0.1,
+        "min_lr": 0.0
+    },
+    "logging": {
+        "log-interval": 1,
+        "tensorboard-dir": "path-to-tensorboard-log-dir",
+        "tensorboard_log_interval": 1
+    }
+}
